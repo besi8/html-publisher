@@ -3,16 +3,12 @@ import zipfile, io, requests
 
 app = Flask(__name__)
 
-# VENDOS këtu të dhënat e tua reale
-NETLIFY_SITE_ID = "vendos_ketu_site_id"
-NETLIFY_API_TOKEN = "vendos_ketu_tokenin"
+NETLIFY_SITE_ID = "ea2c01c6-c2b6-46e3-ab7a-135b45af3838"
+NETLIFY_API_TOKEN = "nfp_G1fwnnWwkQPTB9xrFZ8QWXVdYxgYbxmW6f11"
 
 @app.route("/", methods=["GET"])
-def index():
-    return jsonify({
-        "status": "✅ Serveri po funksionon!",
-        "message": "Përdor /publish për të dërguar HTML."
-    })
+def home():
+    return jsonify({"status": "✅ App is running", "info": "Use POST /publish to deploy HTML to Netlify"})
 
 @app.route("/publish", methods=["POST"])
 def publish():
@@ -37,7 +33,6 @@ def publish():
     response = requests.post(url, headers=headers, files=files)
 
     if response.status_code in [200, 201]:
-        deploy_url = response.json().get('deploy_ssl_url')
-        return jsonify({"message": "Deployed!", "url": deploy_url})
+        return jsonify({"message": "✅ Deployment successful!", "url": response.json().get('deploy_ssl_url')})
     else:
         return jsonify({"error": "Deployment failed", "details": response.text}), 500
